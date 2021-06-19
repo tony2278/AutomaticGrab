@@ -1,0 +1,6 @@
+/include/  
+/lib/
+/build/
+*.jpg
+*.user
+*.hdev
