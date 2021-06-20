@@ -49,13 +49,63 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QWidget" name="widget_Depth" native="true"/>
+        <widget class="QWidget" name="widget_Depth" native="true">
+         <property name="font">
+          <font>
+           <pointsize>9</pointsize>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <widget class="QLabel" name="label_2">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>130</y>
+            <width>161</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Depth</string>
+          </property>
+         </widget>
+        </widget>
        </item>
        <item>
         <widget class="QWidget" name="widget_Color" native="true">
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>1</number>
+          </property>
+          <property name="topMargin">
+           <number>1</number>
+          </property>
+          <property name="rightMargin">
+           <number>1</number>
+          </property>
+          <property name="bottomMargin">
+           <number>1</number>
+          </property>
           <item>
            <widget class="QLabel" name="labelColor">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
             <property name="text">
              <string>Color Image</string>
             </property>
@@ -68,7 +118,28 @@
         </widget>
        </item>
        <item>
-        <widget class="QWidget" name="widget_Result" native="true"/>
+        <widget class="QWidget" name="widget_Result" native="true">
+         <widget class="QLabel" name="label">
+          <property name="geometry">
+           <rect>
+            <x>90</x>
+            <y>130</y>
+            <width>181</width>
+            <height>51</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Result</string>
+          </property>
+         </widget>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -99,6 +170,8 @@
     </property>
     <addaction name="actionStart"/>
     <addaction name="actionStop"/>
+    <addaction name="actionTake_Photo"/>
+    <addaction name="actionTake_Ply"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuControl"/>
@@ -125,6 +198,16 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionTake_Ply">
+   <property name="text">
+    <string>Take Ply</string>
+   </property>
+  </action>
+  <action name="actionTake_Photo">
+   <property name="text">
+    <string>Take Photo</string>
    </property>
   </action>
  </widget>

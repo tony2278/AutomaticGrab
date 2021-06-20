@@ -24,9 +24,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    camera_realsense.cpp \
+    camera_thread.cpp \
+    mars.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    camera_realsense.h \
+    camera_thread.h \
+    common1.h \
+    mars.h
 
 FORMS    += mainwindow.ui
 
@@ -34,13 +41,54 @@ FORMS    += mainwindow.ui
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/include/halconcpp
 
+#-------Halcon Config Lib
 LIBS += $$PWD/lib/x64-win64/halconcpp.lib
 LIBS += $$PWD/lib/x64-win64/halcon.lib
 
 #-------OpenCV Config
-
+INCLUDEPATH += $$PWD/opencv/build/include
+INCLUDEPATH += $$PWD/opencv/build/include/opencv2
 
 #-------PCL Config
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Boost/include/boost-1_68
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/FLANN/include
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Qhull/include
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/VTK/include
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/include/pcl-1.9
+INCLUDEPATH += $$PWD/include_PCL/OpenNI2/Include
+
+#-------RealSense Config
+INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/include
+INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/samples
+
+
+#-------OpenCV Config Lib
+LIBS += $$PWD/lib_OpenCV/OpenCV4.5.0_Release/lib/opencv_world452.lib
+
+#-------PCL Config Lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Boost/lib/*.lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3/*.lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/FLANN/lib/*.lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/lib/*.lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Qhull/lib/*.lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/VTK/lib/*.lib
+LIBS += $$PWD/lib_PCL/OpenNI2/Lib/*.lib
+LIBS += $$PWD/lib_PCL/debug/lib/gd.lib
+
+#-------RealSense Config Lib
+LIBS += $$PWD/lib_RealSense/Intel-RealSense-SDK-2.0/lib/x64/realsense2.lib
+
+
+#Debug: {
+#LIBS += D:/opencv348/opencv/build/x64/vc14/lib/opencv_world348d.lib\
+#        "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
+#}
+#Release: {
+#LIBS += D:/opencv348/opencv/build/x64/vc14/lib/opencv_world348.lib\
+#        "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
+#}
+
 
 
 
