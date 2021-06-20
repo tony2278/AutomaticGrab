@@ -1,4 +1,7 @@
-/include/  
+/include/
+/include_OpenCV/
+/include_PCL/
+/include_RealSense/
 /lib/
 /build/
 *.jpg
