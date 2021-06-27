@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QThread>
 #include <QImage>
 #include <QPixmap>
 #include "opencv2/opencv.hpp"
@@ -16,6 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     m_Start = false;
+
+
+    QObject::connect(&m_Thread, SIGNAL(started()), &m_CameraRS, SLOT(Start()));
+    QObject::connect(this, SIGNAL(isStop()), &m_CameraRS, SLOT(Stop()));
+    m_Thread.start();
+    m_CameraRS.moveToThread(&m_Thread);
 }
 
 MainWindow::~MainWindow()
@@ -25,89 +32,74 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionStart_triggered()
 {
-    m_CameraThread.start();
-
-    QThread::msleep(3000);
-    cv::Mat frame = m_CameraThread.frame(COLOR_IMAGE);
-    if(frame.empty())
-    {
-        ui->textEdit->append("frame is empty!");
-        m_CameraThread.stop();
-        return;
-    }
-
     // Local control variables
-    int vid = ui->widget_Depth->winId();
-    HTuple winID = vid;
+    //int vid = ui->widget_Depth->winId();
+    //HTuple winID = vid;
     //HTuple hv_Width, hv_Height;
     //GetImageSize(hobjImg, &hv_Width, &hv_Height);
-    SetWindowAttr("background_color","black");
-    OpenWindow(0,0,ui->labelColor->width(), ui->labelColor->height(),winID,"visible","",&hv_WindowID);
-    HDevWindowStack::Push((hv_WindowID));
+    //SetWindowAttr("background_color","black");
+    //OpenWindow(0,0,ui->labelColor->width(), ui->labelColor->height(),winID,"visible","",&hv_WindowID);
+    //HDevWindowStack::Push((hv_WindowID));
 
     m_Start = true;
-    while(1)
+    //while(1)
     {
-        if(!m_Start) break;
-
-        cv::Mat frame = m_CameraThread.frame(COLOR_IMAGE);
-        if(frame.empty())
+        if(!m_Start)
         {
-            m_CameraThread.stop();
             return;
+            //break;
         }
 
-        cv::Mat resizedFrame;
-        //cv::resize(frame, resizedFrame, cv::Size(ui->labelColor->width(), ui->labelColor->height()));
-
-        HObject hobjImage;
-        QImage image = Mars::cvMat2QImage(frame);
-        if(image.width() < 1)
+        cv::Mat colorframe = m_CameraRS.frame(COLOR_IMAGE);
+        if(colorframe.empty())
         {
-            ui->textEdit->append("Capture failed, use default image.");
-            m_CameraThread.stop();
+            QThread::msleep(1000);
             return;
-
-            /*
-            QString path = "D:/image/123456.bmp";
-            ReadImage(&hobjImage, "D:/image/123456.bmp");
-            if(!(img->load(path)))
-            {
-                m_CameraThread.stop();
-                return;
-            }*/
+            //continue;
         }
-        else
+
+        cv::Mat depthFrame = m_CameraRS.frame(DEPTH_IMAGE);
+        if(depthFrame.empty())
         {
-            hobjImage = Mars::MatToHImage(frame);
+            QThread::msleep(1000);
+            return;
+            //continue;
         }
 
+        QImage image = Mars::cvMat2QImage(colorframe);
         QPixmap pixmap = QPixmap::fromImage(image);
         pixmap = pixmap.scaled(ui->labelColor->size(), Qt::KeepAspectRatio);
         ui->labelColor->setPixmap(pixmap);
 
-        action(hobjImage);
-    }
+        QImage imageDepth = Mars::cvMat2QImage(depthFrame);
+        QPixmap pixmapDepth = QPixmap::fromImage(imageDepth);
+        pixmapDepth = pixmapDepth.scaled(ui->labelDepth->size(), Qt::KeepAspectRatio);
+        ui->labelDepth->setPixmap(pixmapDepth);
 
-    m_CameraThread.stop();
+        HObject hobjImage = Mars::MatToHImage(colorframe);
+        QImage resultImage = actionX(hobjImage);
+        QPixmap pixmapResult = QPixmap::fromImage(resultImage);
+        pixmapResult = pixmapResult.scaled(ui->labelResult->size(), Qt::KeepAspectRatio);
+        ui->labelResult->setPixmap(pixmapResult);
+        QThread::msleep(50);
+    }
 }
 
 void MainWindow::on_actionStop_triggered()
 {
     m_Start = false;
-    m_CameraThread.stop();
+    emit isStop();
 
     ui->labelColor->clear();
-    if (HDevWindowStack::IsOpen())
-    {
-        //ClearWindow(HDevWindowStack::GetActive());
-        CloseWindow(HDevWindowStack::GetActive());
-    }
+    ui->labelDepth->clear();
+    ui->labelResult->clear();
+
+    m_Thread.wait();
 }
 
 void MainWindow::on_actionExit_triggered()
 {
-    m_CameraThread.stop();
+    on_actionStop_triggered();
 
     this->close();
 
@@ -116,7 +108,6 @@ void MainWindow::on_actionExit_triggered()
 // Main procedure
 void MainWindow::action(HObject hobjImg)
 {
-
   // Local iconic variables
   HObject  ho_Region, ho_ConnectedRegions;
   HObject  ho_ImageReduced;
@@ -128,12 +119,37 @@ void MainWindow::action(HObject hobjImg)
       DispObj(ho_ImageReduced, HDevWindowStack::GetActive());
 }
 
+QImage MainWindow::actionX(HObject hobjImg)
+{
+    // Local iconic variables
+    HObject  ho_Region, ho_ConnectedRegions;
+    HObject  ho_ImageReduced;
+    QImage result;
+
+    Threshold(hobjImg, &ho_Region, 0, 100);
+    Connection(ho_Region, &ho_ConnectedRegions);
+    ReduceDomain(hobjImg, ho_ConnectedRegions, &ho_ImageReduced);
+    HImage hImg(ho_ImageReduced);
+    Mars::HImage2QImage(hImg, result);
+    return result;
+}
+
 void MainWindow::on_actionTake_Ply_triggered()
 {
 
 }
 
 void MainWindow::on_actionTake_Photo_triggered()
+{
+
+}
+
+void MainWindow::on_actionBinocular_Calibration_triggered()
+{
+
+}
+
+void MainWindow::on_actionPlane_Calibration_triggered()
 {
 
 }

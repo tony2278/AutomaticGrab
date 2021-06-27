@@ -1,7 +1,7 @@
 #include "camera_realsense.h"
 #include <QThread>
 
-Camera_RealSense::Camera_RealSense()
+Camera_RealSense::Camera_RealSense(QObject *parent): QObject(parent)
 {
     m_Flag = false;
 }
@@ -11,24 +11,29 @@ bool Camera_RealSense::Start()
     rs2::config cfg;
     rs2::colorizer c;
     //cfg.enable_stream(RS2_STREAM_DEPTH, 640, 360, RS2_FORMAT_Z16, 30); //RS2_STREAM_DEPTH  RS2_STREAM_COLOR
-    //pipe.start(cfg);
-    pipe.start(); //add: does rs really open?
+    cfg.enable_stream(RS2_STREAM_DEPTH);
+    cfg.enable_stream(RS2_STREAM_COLOR);
+    pipe.start(cfg); //add: does rs really open?
 
-    rs2::align align_to_color(RS2_STREAM_COLOR);
-    rs2::frameset frames, aligned_frames;
-
+    rs2::frameset frameset;
     for (int i = 0; i < 30; i++)
     {
-        frames = pipe.wait_for_frames();
+        frameset = pipe.wait_for_frames();
     }
 
     m_Flag = true;
     while(m_Flag)
     {
-        frames = pipe.wait_for_frames();
-        aligned_frames = align_to_color.process(frames);
-        rs2::frame depth_frame = aligned_frames.get_depth_frame(); //frames
-        rs2::frame color_frame = aligned_frames.get_color_frame(); //frames
+        frameset = pipe.wait_for_frames();
+        if(frameset.size() < 1)
+        {
+            continue;
+        }
+
+        rs2::align align_to_color(RS2_STREAM_COLOR);
+        frameset = align_to_color.process(frameset);
+        rs2::frame depth_frame = frameset.get_depth_frame(); //frames
+        rs2::frame color_frame = frameset.get_color_frame(); //frames
 
         rs2::frame colorized_depth = c.colorize(depth_frame);
 
@@ -53,17 +58,40 @@ void Camera_RealSense::Stop()
     if(m_Flag)
     {
         m_Flag = false;
-        QThread::sleep(1);
         pipe.stop();
+        QThread::sleep(10);
     }
 }
 
 cv::Mat Camera_RealSense::DepthFrame()
 {
-    return m_ColorizedDepth;
+    if(m_ColorizedDepth.empty())
+    {
+        return cv::Mat();
+    }
+    else
+    {
+        return m_ColorizedDepth.clone();
+    }
 }
 
 cv::Mat Camera_RealSense::ColorFrame()
 {
-    return m_Color;
+    if(m_Color.empty())
+    {
+        return cv::Mat();
+    }
+    else
+    {
+        return m_Color.clone();
+    }
 }
+
+cv::Mat Camera_RealSense::frame(int type)
+{
+    if(type == DEPTH_IMAGE)
+        return DepthFrame();
+    else //if(type == COLOR_IMAGE)
+        return ColorFrame();
+}
+

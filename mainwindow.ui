@@ -34,19 +34,19 @@
      <widget class="QWidget" name="widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,1">
        <property name="spacing">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="leftMargin">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="topMargin">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>1</number>
        </property>
        <property name="bottomMargin">
-        <number>0</number>
+        <number>1</number>
        </property>
        <item>
         <widget class="QWidget" name="widget_Depth" native="true">
@@ -57,26 +57,25 @@
            <bold>false</bold>
           </font>
          </property>
-         <widget class="QLabel" name="label_2">
-          <property name="geometry">
-           <rect>
-            <x>80</x>
-            <y>130</y>
-            <width>161</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Depth</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QLabel" name="labelDepth">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Depth Image</string>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
@@ -119,26 +118,25 @@
        </item>
        <item>
         <widget class="QWidget" name="widget_Result" native="true">
-         <widget class="QLabel" name="label">
-          <property name="geometry">
-           <rect>
-            <x>90</x>
-            <y>130</y>
-            <width>181</width>
-            <height>51</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>12</pointsize>
-            <weight>75</weight>
-            <bold>true</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>Result</string>
-          </property>
-         </widget>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="QLabel" name="labelResult">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="text">
+             <string>Result Image</string>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -174,7 +172,24 @@
     <addaction name="actionTake_Ply"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuCalibration">
+    <property name="title">
+     <string>Calibration</string>
+    </property>
+    <addaction name="actionBinocular_Calibration"/>
+    <addaction name="actionPlane_Calibration"/>
+    <addaction name="actionCalibrationBoard"/>
+   </widget>
+   <widget class="QMenu" name="menuHandEyeCalibration">
+    <property name="title">
+     <string>HandEyeCalibration</string>
+    </property>
+    <addaction name="actionEyeOnHand"/>
+    <addaction name="actionEyeOffHanf"/>
+   </widget>
    <addaction name="menuControl"/>
+   <addaction name="menuCalibration"/>
+   <addaction name="menuHandEyeCalibration"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -208,6 +223,31 @@
   <action name="actionTake_Photo">
    <property name="text">
     <string>Take Photo</string>
+   </property>
+  </action>
+  <action name="actionBinocular_Calibration">
+   <property name="text">
+    <string>Binocular Calibration</string>
+   </property>
+  </action>
+  <action name="actionPlane_Calibration">
+   <property name="text">
+    <string>Plane Calibration</string>
+   </property>
+  </action>
+  <action name="actionEyeOnHand">
+   <property name="text">
+    <string>EyeOnHand</string>
+   </property>
+  </action>
+  <action name="actionEyeOffHanf">
+   <property name="text">
+    <string>EyeOffHand</string>
+   </property>
+  </action>
+  <action name="actionCalibrationBoard">
+   <property name="text">
+    <string>CalibrationBoard</string>
    </property>
   </action>
  </widget>
