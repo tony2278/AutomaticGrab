@@ -34,19 +34,19 @@
      <widget class="QWidget" name="widget" native="true">
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,1">
        <property name="spacing">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="leftMargin">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>1</number>
+        <number>0</number>
        </property>
        <item>
         <widget class="QWidget" name="widget_Depth" native="true">
@@ -187,9 +187,22 @@
     <addaction name="actionEyeOnHand"/>
     <addaction name="actionEyeOffHanf"/>
    </widget>
+   <widget class="QMenu" name="menuview">
+    <property name="title">
+     <string>view</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuAbout">
+    <property name="title">
+     <string>About</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuControl"/>
    <addaction name="menuCalibration"/>
    <addaction name="menuHandEyeCalibration"/>
+   <addaction name="menuview"/>
+   <addaction name="menuAbout"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -248,6 +261,11 @@
   <action name="actionCalibrationBoard">
    <property name="text">
     <string>CalibrationBoard</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

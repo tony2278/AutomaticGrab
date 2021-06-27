@@ -1,5 +1,6 @@
 #include "camera_realsense.h"
 #include <QThread>
+#include "common1.h"
 
 Camera_RealSense::Camera_RealSense(QObject *parent): QObject(parent)
 {
@@ -8,6 +9,7 @@ Camera_RealSense::Camera_RealSense(QObject *parent): QObject(parent)
 
 bool Camera_RealSense::Start()
 {
+    g_ThreadFlag = true;
     rs2::config cfg;
     rs2::colorizer c;
     //cfg.enable_stream(RS2_STREAM_DEPTH, 640, 360, RS2_FORMAT_Z16, 30); //RS2_STREAM_DEPTH  RS2_STREAM_COLOR
@@ -24,6 +26,19 @@ bool Camera_RealSense::Start()
     m_Flag = true;
     while(m_Flag)
     {
+        g_ThreadMutex.lock();
+        m_Flag = g_ThreadFlag;
+        g_ThreadMutex.unlock();
+
+        if(!m_Flag)
+        {
+            pipe.stop();
+            m_Color = cv::Mat();
+            m_ColorizedDepth = cv::Mat();
+
+            break;
+        }
+
         frameset = pipe.wait_for_frames();
         if(frameset.size() < 1)
         {
@@ -55,12 +70,8 @@ bool Camera_RealSense::Start()
 
 void Camera_RealSense::Stop()
 {
-    if(m_Flag)
-    {
-        m_Flag = false;
-        pipe.stop();
-        QThread::sleep(10);
-    }
+    pipe.stop();
+    QThread::sleep(10);
 }
 
 cv::Mat Camera_RealSense::DepthFrame()

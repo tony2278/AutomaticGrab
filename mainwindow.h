@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QThread>
 #include <QImage>
+#include<qtimer.h>
 #include "HalconCpp.h"
 #include "HDevThread.h"
 
@@ -40,6 +41,10 @@ private slots:
 
     void on_actionPlane_Calibration_triggered();
 
+    void startGUI();
+
+    void on_actionAbout_triggered();
+
 signals:
     void isStop();  //处理完成信号
 
@@ -49,7 +54,10 @@ private:
     HalconCpp::HTuple hv_WindowID;
     Camera_RealSense m_CameraRS;
     QThread m_Thread;
-    bool m_Start;
+    QTimer *m_pTimer;
+    cv::Mat m_DepthFlame;
+    cv::Mat m_ColorFlame;
+    bool m_StartCamera;
 };
 
 #endif // MAINWINDOW_H

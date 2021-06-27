@@ -7,3 +7,5 @@
 *.jpg
 *.user
 *.hdev
+*.dll
+*.lib

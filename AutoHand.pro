@@ -37,13 +37,15 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
+
+QMAKE_CFLAGS_DEBUG += -MDd
+QMAKE_CXXFLAGS_DEBUG += -MDd
+QMAKE_CFLAGS_RELEASE += -MD
+QMAKE_CXXFLAGS_RELEASE += -MD
+
 #-------Halcon Config
 INCLUDEPATH += $$PWD/include
 INCLUDEPATH += $$PWD/include/halconcpp
-
-#-------Halcon Config Lib
-LIBS += $$PWD/lib/x64-win64/halconcpp.lib
-LIBS += $$PWD/lib/x64-win64/halcon.lib
 
 #-------OpenCV Config
 INCLUDEPATH += $$PWD/opencv/build/include
@@ -62,11 +64,37 @@ INCLUDEPATH += $$PWD/include_PCL/OpenNI2/Include
 INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/include
 INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/samples
 
-
+Debug:
+{
 #-------OpenCV Config Lib
+LIBS += $$PWD/lib_OpenCV/OpenCV4.5.0_Release/lib/opencv_world452d.lib
+}
+Release:
+{
 LIBS += $$PWD/lib_OpenCV/OpenCV4.5.0_Release/lib/opencv_world452.lib
+}
+#-------PCL Config Lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Boost/lib/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/FLANN/lib/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/lib/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Qhull/lib/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/VTK/lib/*.lib
+#LIBS += $$PWD/lib_PCL/OpenNI2/Lib/*.lib
+#LIBS += $$PWD/lib_PCL/debug/lib/gd.lib
+
+#-------RealSense Config Lib
+#LIBS += $$PWD/lib_RealSense/Intel-RealSense-SDK-2.0/lib/x64/realsense2.lib
+
+#}
+#Release:
+#{
+#-------Halcon Config Lib
+LIBS += $$PWD/lib/x64-win64/halconcpp.lib
+LIBS += $$PWD/lib/x64-win64/halcon.lib
 
 #-------PCL Config Lib
+LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Boost/lib/libboost_system-vc141-mt-gd-x64-1_68.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Boost/lib/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/FLANN/lib/*.lib
@@ -74,21 +102,11 @@ LIBS += $$PWD/lib_PCL/PCL-1.9.1/lib/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Qhull/lib/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/VTK/lib/*.lib
 LIBS += $$PWD/lib_PCL/OpenNI2/Lib/*.lib
-LIBS += $$PWD/lib_PCL/debug/lib/gd.lib
+LIBS += $$PWD/lib_PCL/release/lib/gd.lib
 
 #-------RealSense Config Lib
 LIBS += $$PWD/lib_RealSense/Intel-RealSense-SDK-2.0/lib/x64/realsense2.lib
-
-
-#Debug: {
-#LIBS += D:/opencv348/opencv/build/x64/vc14/lib/opencv_world348d.lib\
-#        "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
 #}
-#Release: {
-#LIBS += D:/opencv348/opencv/build/x64/vc14/lib/opencv_world348.lib\
-#        "C:/Program Files (x86)/Intel RealSense SDK 2.0/lib/x64/realsense2.lib"
-#}
-
 
 
 
