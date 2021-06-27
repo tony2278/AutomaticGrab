@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>FormAbout</class>
+ <widget class="QWidget" name="FormAbout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>629</width>
+    <height>437</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>CopyRight</string>
+  </property>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>140</y>
+     <width>321</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>loveu1061@126.com</string>
+   </property>
+   <property name="statusTip">
+    <string>loveu1061@126.com</string>
+   </property>
+   <property name="text">
+    <string>Copy Right: Tony2278</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -13,6 +13,9 @@ using namespace HalconCpp;
 bool g_ThreadFlag = false;
 std::mutex g_ThreadMutex;
 
+
+//to do : TCP, log, caibration...
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -21,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->textEdit->append("by Tony2278");
     g_ThreadFlag = true;
     m_StartCamera = false;
+    m_pAabout = NULL;
 
     m_pTimer = new QTimer(this);
     m_pTimer->setInterval(100);
@@ -35,6 +39,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    if(m_pAabout) delete m_pAabout;
+
+    if(m_Thread.isRunning())
+    {
+        m_Thread.quit();
+        m_Thread.wait();
+        m_pTimer->stop();
+    }
+
     delete ui;
 }
 
@@ -76,6 +89,9 @@ void MainWindow::on_actionStop_triggered()
     ui->labelColor->setPixmap(QPixmap());
     ui->labelDepth->setPixmap(QPixmap());
     ui->labelResult->setPixmap(QPixmap());
+    ui->labelColor->setText("Color");
+    ui->labelDepth->setText("Depth");
+    ui->labelResult->setText("Result");
 
     m_Thread.quit();
     m_Thread.wait();
@@ -230,5 +246,10 @@ void MainWindow::startGUI()
 
 void MainWindow::on_actionAbout_triggered()
 {
+    if(!m_pAabout)
+    {
+        m_pAabout = new FormAbout();
+    }
 
+    m_pAabout->show();
 }

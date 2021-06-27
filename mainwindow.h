@@ -8,6 +8,8 @@
 #include "HalconCpp.h"
 #include "HDevThread.h"
 
+#include "formabout.h"
+
 #include "camera_realsense.h"
 #include "mars.h"
 
@@ -58,6 +60,8 @@ private:
     cv::Mat m_DepthFlame;
     cv::Mat m_ColorFlame;
     bool m_StartCamera;
+
+    FormAbout *m_pAabout;
 };
 
 #endif // MAINWINDOW_H

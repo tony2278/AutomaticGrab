@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
+    formabout.cpp \
         mainwindow.cpp \
     camera_realsense.cpp \
     camera_thread.cpp \
@@ -33,9 +34,11 @@ HEADERS  += mainwindow.h \
     camera_realsense.h \
     camera_thread.h \
     common1.h \
+    formabout.h \
     mars.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    formabout.ui
 
 
 QMAKE_CFLAGS_DEBUG += -MDd
