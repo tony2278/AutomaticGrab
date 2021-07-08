@@ -205,7 +205,9 @@ void MainWindow::on_actionBinocular_Calibration_triggered()
 
 void MainWindow::on_actionPlane_Calibration_triggered()
 {
-
+    m_Ahcpf.SetPF();
+    m_Ahcpf.ReadPly();
+    m_Ahcpf.onNewCloud();
 }
 
 void MainWindow::startGUI()

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>3D视觉抓取</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout" stretch="3,2">
@@ -194,7 +194,7 @@
    </property>
    <widget class="QMenu" name="menuControl">
     <property name="title">
-     <string>Control</string>
+     <string>控制</string>
     </property>
     <addaction name="actionStart"/>
     <addaction name="actionStop"/>
@@ -204,7 +204,7 @@
    </widget>
    <widget class="QMenu" name="menuCalibration">
     <property name="title">
-     <string>Calibration</string>
+     <string>一般标定</string>
     </property>
     <addaction name="actionBinocular_Calibration"/>
     <addaction name="actionPlane_Calibration"/>
@@ -212,8 +212,9 @@
    </widget>
    <widget class="QMenu" name="menuHandEyeCalibration">
     <property name="title">
-     <string>HandEyeCalibration</string>
+     <string>手眼标定</string>
     </property>
+    <addaction name="action"/>
     <addaction name="actionEyeOnHand"/>
     <addaction name="actionEyeOffHanf"/>
    </widget>
@@ -245,37 +246,38 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionStart">
    <property name="text">
-    <string>Start</string>
+    <string>启动</string>
    </property>
   </action>
   <action name="actionStop">
    <property name="text">
-    <string>Stop</string>
+    <string>结束</string>
    </property>
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>退出
+</string>
    </property>
   </action>
   <action name="actionTake_Ply">
    <property name="text">
-    <string>Take Ply</string>
+    <string>拍点云</string>
    </property>
   </action>
   <action name="actionTake_Photo">
    <property name="text">
-    <string>Take Photo</string>
+    <string>拍照</string>
    </property>
   </action>
   <action name="actionBinocular_Calibration">
    <property name="text">
-    <string>Binocular Calibration</string>
+    <string>双目标定</string>
    </property>
   </action>
   <action name="actionPlane_Calibration">
    <property name="text">
-    <string>Plane Calibration</string>
+    <string>平面标定</string>
    </property>
   </action>
   <action name="actionEyeOnHand">
@@ -290,12 +292,17 @@
   </action>
   <action name="actionCalibrationBoard">
    <property name="text">
-    <string>CalibrationBoard</string>
+    <string>标定板精度</string>
    </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+  </action>
+  <action name="action">
+   <property name="text">
+    <string>启动手眼标定</string>
    </property>
   </action>
  </widget>

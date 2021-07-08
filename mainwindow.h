@@ -13,6 +13,8 @@
 #include "camera_realsense.h"
 #include "mars.h"
 
+#include "ahcplanefitter.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -61,7 +63,11 @@ private:
     cv::Mat m_ColorFlame;
     bool m_StartCamera;
 
+    //Form UI
     FormAbout *m_pAabout;
+
+    //AHC plane
+    AHCPlaneFitter m_Ahcpf;
 };
 
 #endif // MAINWINDOW_H

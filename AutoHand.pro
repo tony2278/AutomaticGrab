@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
+    ahcplanefitter.cpp \
     formabout.cpp \
         mainwindow.cpp \
     camera_realsense.cpp \
@@ -31,6 +32,7 @@ SOURCES += main.cpp\
     mars.cpp
 
 HEADERS  += mainwindow.h \
+    ahcplanefitter.h \
     camera_realsense.h \
     camera_thread.h \
     common1.h \
@@ -66,6 +68,9 @@ INCLUDEPATH += $$PWD/include_PCL/OpenNI2/Include
 #-------RealSense Config
 INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/include
 INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/samples
+
+#-------AHC Config
+INCLUDEPATH += $$PWD/include_AHC
 
 Debug:
 {
