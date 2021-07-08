@@ -25,6 +25,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
     ahcplanefitter.cpp \
+    fitplane.cpp \
     formabout.cpp \
         mainwindow.cpp \
     camera_realsense.cpp \
@@ -36,6 +37,7 @@ HEADERS  += mainwindow.h \
     camera_realsense.h \
     camera_thread.h \
     common1.h \
+    fitplane.h \
     formabout.h \
     mars.h
 
@@ -62,6 +64,7 @@ INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3
 INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/FLANN/include
 INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Qhull/include
 INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/VTK/include
+INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/VTK/include/vtk-8.1
 INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/include/pcl-1.9
 INCLUDEPATH += $$PWD/include_PCL/OpenNI2/Include
 
@@ -108,9 +111,9 @@ LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Eigen/eigen3/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/FLANN/lib/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/lib/*.lib
 LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/Qhull/lib/*.lib
-LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/VTK/lib/*.lib
+#LIBS += $$PWD/lib_PCL/PCL-1.9.1/3rdParty/VTK/lib/*.lib
 LIBS += $$PWD/lib_PCL/OpenNI2/Lib/*.lib
-LIBS += $$PWD/lib_PCL/release/lib/gd.lib
+#LIBS += $$PWD/lib_PCL/release/lib/gd.lib
 
 #-------RealSense Config Lib
 LIBS += $$PWD/lib_RealSense/Intel-RealSense-SDK-2.0/lib/x64/realsense2.lib

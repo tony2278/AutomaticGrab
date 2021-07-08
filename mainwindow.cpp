@@ -205,9 +205,14 @@ void MainWindow::on_actionBinocular_Calibration_triggered()
 
 void MainWindow::on_actionPlane_Calibration_triggered()
 {
-    m_Ahcpf.SetPF();
-    m_Ahcpf.ReadPly();
-    m_Ahcpf.onNewCloud();
+    //Method 1 Use AHC
+    //m_Ahcpf.SetPF();
+    //m_Ahcpf.ReadPly();
+    //m_Ahcpf.onNewCloud();   //Some error occur
+
+    //Method 2 Use RANSAC
+    //FitPlane                //need to be verified later
+
 }
 
 void MainWindow::startGUI()
