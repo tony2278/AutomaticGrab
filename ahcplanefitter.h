@@ -39,14 +39,14 @@ struct OrganizedImage3D {
     }
 };
 
-struct Image3DClound
+struct Image3D
 {
     int ww, hh;
     std::vector<Eigen::Vector3d> pcloud3d;
 
-    inline int width() const { return ww; }
-    inline int height() const { return hh; }
-    inline bool get(const int row, const int col, double& x, double& y, double& z) const {
+    int width() const { return ww; }
+    int height() const { return hh; }
+    bool get(const int row, const int col, double& x, double& y, double& z) const {
         const int index = row * ww + col;
         x=pcloud3d[index][0]; y=pcloud3d[index][1]; z=pcloud3d[index][2];
         if(pcl_isnan(z)==0 || z == 0) //return false if current depth is NaN
@@ -62,12 +62,12 @@ typedef OrganizedImage3D<pcl::PointXYZRGB> RGBDImage;
 typedef OrganizedImage3D<pcl::PointXYZ> RGBImage;
 typedef ahc::PlaneFitter<RGBDImage> PlaneFitter1;
 typedef ahc::PlaneFitter<RGBImage> PlaneFitter2;
-typedef ahc::PlaneFitter<Image3DClound> PlaneFilter3;
+typedef ahc::PlaneFitter<Image3D> PlaneFilter3;
 
 // 定义点云类型
 typedef pcl::PointXYZRGBA PointT;
 typedef pcl::PointCloud<PointT> PointCloud;
-typedef pcl::PointCloud<Image3DClound> PointCloud_;
+typedef pcl::PointCloud<Image3D> PointCloud_;
 
 class AHCPlaneFitter
 {

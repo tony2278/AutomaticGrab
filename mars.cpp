@@ -320,12 +320,12 @@ bool MyPointClound::GenPly(cv::Mat depth, cv::Mat rgb)
     return cloud->points.size();
 }
 
-Image3DClound MyPointClound::GenPly(cv::Mat depth)
+Image3D MyPointClound::GenPly(cv::Mat depth)
 {
     // 点云变量
     // 使用智能指针，创建一个空点云。这种指针用完会自动释放。
     //PointCloud_::Ptr cloud(new PointCloud_);
-    Image3DClound cloud;
+    Image3D cloud;
     int index = 0;
 
     int space = depth.rows * depth.cols;

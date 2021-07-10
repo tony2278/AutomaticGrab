@@ -761,13 +761,14 @@ namespace ahc {
 			const int Nw   = this->width/this->windowWidth;
 
 			//1. init nodes
-			std::vector<PlaneSeg::Ptr> G(Nh*Nw, static_cast<PlaneSeg::Ptr>(0));
+			std::vector<PlaneSeg::Ptr> G(Nh*Nw, 0 /*static_cast<PlaneSeg::Ptr>(0)*/);
 			//this->blkStats.resize(Nh*Nw);
 
 #ifdef DEBUG_INIT
 			dInit.create(this->height, this->width, CV_8UC3);
 			dInit.setTo(cv::Vec3b(0,0,0));
 #endif
+            int nnn = 0;
 			for(int i=0; i<Nh; ++i) {
 				for(int j=0; j<Nw; ++j) {
 					PlaneSeg::shared_ptr p( new PlaneSeg(
@@ -776,9 +777,9 @@ namespace ahc {
 						this->width, this->height,
 						this->windowWidth, this->windowHeight,
 						this->params) );
-					if(p->mse<params.T_mse(ParamSet::P_INIT, p->center[2])
-						&& !p->nouse)
+                              if(p->mse<params.T_mse(ParamSet::P_INIT, p->center[2]) && !p->nouse)
 					{
+                        nnn += 1;
 						G[i*Nw+j]=p.get();
 						minQ.push(p);
 						//this->blkStats[i*Nw+j]=p->stats;
@@ -902,8 +903,9 @@ namespace ahc {
 #ifdef DEBUG_INIT
 			static int cnt=0;
 			cv::namedWindow("debug initGraph");
-			cv::cvtColor(dInit,dInit,CV_RGB2BGR);
+			cv::cvtColor(dInit,dInit,cv::COLOR_RGB2BGR);
 			cv::imshow("debug initGraph", dInit);
+			cv::waitKey(0);
 			std::stringstream ss;
 			ss<<saveDir<<"/output/db_init"<<std::setw(5)<<std::setfill('0')<<cnt++<<".png";
 			std::cout << ss.str() << std::endl;
@@ -988,7 +990,7 @@ namespace ahc {
 					if(p->normalSimilarity(*nb) < params.T_ang(ParamSet::P_MERGING, p->center[2])) continue;
 					PlaneSeg::shared_ptr merge(new PlaneSeg(*p, *nb));
 					if(cand_merge==0 || cand_merge->mse>merge->mse ||
-						(cand_merge->mse==merge->mse && cand_merge->N<merge->N))
+						(cand_merge->mse==merge->mse && cand_merge->N<merge->mse))
 					{
 						cand_merge=merge;
 						cand_nb=nb;

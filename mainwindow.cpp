@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QThread>
+#include <QString>
 #include <QImage>
 #include <QPixmap>
 #include <QDir>
@@ -231,15 +232,16 @@ void MainWindow::on_actionPlane_Calibration_triggered()
     m_PlaneFilter.clear();
     m_PlaneContour.clear();
 
-    /*
+
     m_PlaneFilter.minSupport = 200;
-    m_PlaneFilter.params.z_far = 2000;
+    m_PlaneFilter.params.z_near = 0;
+    m_PlaneFilter.params.z_far = 1000;
     m_PlaneFilter.params.depthAlpha = 0.09;
     m_PlaneFilter.windowWidth = m_PlaneFilter.windowHeight = 2;
-    m_PlaneFilter.params.stdTol_merge = 10;
-    m_PlaneFilter.params.stdTol_init = 10;
-    m_PlaneFilter.params.similarityTh_merge = std::cos(MACRO_DEG2RAD(70.0));
-    m_PlaneFilter.params.similarityTh_refine = std::cos(MACRO_DEG2RAD(35.0)); */
+    m_PlaneFilter.params.stdTol_merge = 5;
+    m_PlaneFilter.params.stdTol_init = 5;
+    m_PlaneFilter.params.similarityTh_merge = std::cos(MACRO_DEG2RAD(20.0));
+    m_PlaneFilter.params.similarityTh_refine = std::cos(MACRO_DEG2RAD(10.0));
 
     MyPointClound::GenPly(m_DepthFlame, cv::Mat());
     m_Cloud = MyPointClound::GenPly(m_DepthFlame);
@@ -251,6 +253,10 @@ void MainWindow::on_actionPlane_Calibration_triggered()
     {
         ui->textEdit->append("pSeg Plane number = 0");
         return;
+    }
+    else
+    {
+        ui->textEdit->append("pSeg Plane number = " + QString::number(cnt));
     }
 
     double *centerptr = m_PlaneFilter.extractedPlanes[0]->center;

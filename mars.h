@@ -72,7 +72,7 @@ namespace MyPointClound
 {
     bool GenPly(cv::Mat depth, cv::Mat rgb);
 
-    Image3DClound GenPly(cv::Mat depth);
+    Image3D GenPly(cv::Mat depth);
 
     void GenPlane(PlaneFilter3 &planefilter, std::vector<std::vector<int> > &planeContour, cv::Mat &depth, std::vector<cv::Mat> &vecPlane);
 

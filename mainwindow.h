@@ -73,7 +73,7 @@ private:
     PlaneFilter3 m_PlaneFilter;
     std::vector<std::vector<int> > m_PlaneContour;
 
-    Image3DClound m_Cloud;
+    Image3D m_Cloud;
 };
 
 #endif // MAINWINDOW_H
