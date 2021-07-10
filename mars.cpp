@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+
+
 QImage Mars::cvMat2QImage(const cv::Mat& mat)
 {
     // 8-bits unsigned, NO. OF CHANNELS = 1
@@ -284,11 +286,21 @@ bool MyPointClound::GenPly(cv::Mat depth, cv::Mat rgb)
             p.x = (n - camera_cx) * p.z / camera_fx;
             p.y = (m - camera_cy) * p.z / camera_fy;
 
-            // 从rgb图像中获取它的颜色
-            // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
-            p.b = rgb.ptr<uchar>(m)[n * 3];
-            p.g = rgb.ptr<uchar>(m)[n * 3 + 1];
-            p.r = rgb.ptr<uchar>(m)[n * 3 + 2];
+            if(rgb.empty())
+            {
+                p.b = 0;
+                p.g = 255;
+                p.r = 255;
+            }
+            else
+            {
+                // 从rgb图像中获取它的颜色
+                // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
+                p.b = rgb.ptr<uchar>(m)[n * 3];
+                p.g = rgb.ptr<uchar>(m)[n * 3 + 1];
+                p.r = rgb.ptr<uchar>(m)[n * 3 + 2];
+            }
+
 
             // 把p加入到点云中
             cloud->points.push_back(p);
@@ -308,3 +320,177 @@ bool MyPointClound::GenPly(cv::Mat depth, cv::Mat rgb)
     return cloud->points.size();
 }
 
+Image3DClound MyPointClound::GenPly(cv::Mat depth)
+{
+    // 点云变量
+    // 使用智能指针，创建一个空点云。这种指针用完会自动释放。
+    //PointCloud_::Ptr cloud(new PointCloud_);
+    Image3DClound cloud;
+    int index = 0;
+
+    int space = depth.rows * depth.cols;
+    cloud.pcloud3d.resize(space);
+    cloud.ww = depth.cols;
+    cloud.hh = depth.rows;
+
+    // 遍历深度图
+    for (int m = 0; m < depth.rows; m++)
+    {
+        for (int n = 0; n < depth.cols; n++)
+        {
+            // 获取深度图中(m,n)处的值
+            ushort d = depth.ptr<ushort>(m)[n];
+            // d 可能没有值，若如此，跳过此点
+            if (d == 0)
+            {
+                cloud.pcloud3d[index++] = Eigen::Vector3d(0, 0, 0);
+                continue;
+            }
+
+            // 计算这个点的空间坐标
+            double z = double(d) / camera_factor;
+            double x = (n - camera_cx) * z / camera_fx;
+            double y = (m - camera_cy) * z / camera_fy;
+
+            // 获取颜色
+            //p.b = 0;
+            //p.g = 255;
+            //p.r = 255;
+
+            // 把p加入到点云中
+            cloud.pcloud3d[index++] = Eigen::Vector3d(x, y, z);
+        }
+    }
+
+    // 设置并保存点云
+    std::string name = "./Image/Ply/pointcloud2";
+    //pcl::io::savePLYFile(name + ".ply", cloud);   //将点云数据保存为ply文件
+    //pcl::io::savePCDFile(name + ".pcd", *cloud);   //将点云数据保存为pcd文件
+
+    return cloud;
+}
+
+void MyPointClound::GenPlane(PlaneFilter3 &planefilter, std::vector<std::vector<int> > &planeContour, cv::Mat &depth, std::vector<cv::Mat> &vecPlane)
+{
+    int planeNumber = planefilter.extractedPlanes.size();
+    if( planeNumber < 1)
+    {
+        return;
+    }
+
+    int index = 0;
+    //std::vector<cv::Mat> vecPlane(planeNumber);
+    vecPlane.resize(planeNumber);
+    std::vector<int> vecIndex(planeNumber);
+
+    for(int i=0; i <planeNumber; i++)
+    {
+        vecPlane[i] = cv::Mat(planeContour[i].size(), 3, CV_64FC1);
+        vecIndex[i] = 0;
+    }
+
+    int row = vecPlane[0].rows;
+    int col = vecPlane[0].cols;
+
+    for (int m = 0; m < row; m++)
+    {
+        for (int n = 0; n < col; n++)
+        {
+            int planeId = planefilter.membershipImg.at<int>(m, n);
+            for(int k=0; k<planeNumber; k++)
+            {
+                if(planeId == k)
+                {
+                    // 计算这个点的空间坐标
+                    double *ptr = (double *)vecPlane[k].ptr(vecIndex[k]++);
+                    double z = (double)(depth.at<unsigned short>(row, col));
+                    double x = (n - camera_cx) * z / camera_fx;
+                    double y = (m - camera_cy) * z / camera_fy;
+
+                    // 获取值
+                    ptr[0] = x;
+                    ptr[1] = y;
+                    ptr[2] = z;
+                }
+            }
+        }
+    }
+}
+
+/*
+ *  最小二乘拟合平面，平面方程：Ax+By+Cz=D
+ *  A = plane.at<float>(0,0)
+ *  B = plane.at<float>(1,0)
+ *  C = plane.at<float>(2,0)
+ *  D = plane.at<float>(3,0)
+ *
+ *
+ *  Create by KyJason 2018/01/25  注释added by tony2278
+ *  https://my.oschina.net/u/1046919/blog/1612923
+ *  拟合平面
+ */
+
+void MyPointClound::FitPlane(const cv::Mat &points, cv::Mat& plane)
+{
+    int rows = points.rows;
+    int cols = points.cols;
+
+    //Estimate geometric centroid.
+    cv::Mat centroid = cv::Mat::zeros(1,cols,CV_32FC1);
+    for(int i=0;i<cols;i++)
+    {
+        for(int j=0;j<rows;j++)
+        {
+            centroid.at<float>(0,i) += points.at<float>(j,i);
+        }
+        centroid.at<float>(0,i)/=rows;
+    }
+
+    // Subtract geometric centroid from each point.
+    cv::Mat points2 = cv::Mat::ones(rows,cols,CV_32FC1);
+    for(int i=0;i<rows;i++)
+    {
+        for(int j=0;j<cols;j++)
+        {
+            points2.at<float>(i,j) = points.at<float>(i,j) - centroid.at<float>(0,j) ;
+        }
+    }
+
+    // Evaluate SVD of covariance matrix.
+    cv::Mat A,W,U,V;
+    cv::gemm(points2,points,1,NULL,0,A,CV_GEMM_A_T);
+    cv::SVD::compute(A,W,U,V);
+
+    // Assign plane coefficients by singular vector corresponding to smallest singular value.
+    plane = cv::Mat::zeros(cols+1,1,CV_32FC1);
+    for (int c = 0; c<cols; c++)
+    {
+        plane.at<float>(c,0) = V.at<float>(cols-1,c);
+        plane.at<float>(cols,0) += plane.at<float>(c,0)*centroid.at<float>(0,c);
+    }
+}
+
+
+/*
+ *
+ * 计算点到平面的距离
+ *  Ax+By+Cz=D
+ *  点（a,b,c） 到平面bai Ax+By+Cz=D的距离
+ *  | A * a + B * b + C * c - D| /√(A ^ 2 + B ^ 2 + C ^ 2)
+ *
+ *  https://blog.csdn.net/u012719076/article/details/113124887
+ */
+
+void MyPointClound::CalculateDist(std::vector<float>dx, std::vector<float>dy, std::vector<float>dz, float* plane, std::vector<float> &dist)
+{
+    for (int i = 0; i < dx.size(); i++)
+    {
+        float ds = fabs(plane[0] * dx[i] + plane[1] * dy[i] + plane[2] * dz[i] - plane[3]);
+        float dfen = sqrt(plane[0] * plane[0] + plane[1] * plane[1] + plane[2] * plane[2]);
+        if (!((double)dfen > -0.00001 && (double)dfen < -0.00001))
+        {
+            float ddist = ds / dfen;
+            dist.push_back(ddist);
+        }
+    }
+}

@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->textEdit->append("by Tony2278");
-    g_ThreadFlag = true;
+    g_ThreadFlag = false;
     m_StartCamera = false;
     m_pAabout = NULL;
 
@@ -33,13 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(&m_Thread, SIGNAL(started()), &m_CameraRS, SLOT(Start()));
     //QObject::connect(this, SIGNAL(isStop()), &m_Thread, SLOT(quit()));
     //QObject::connect(&m_Thread, SIGNAL(finished()), &m_CameraRS, SLOT(Stop()));
-    m_Thread.start();
+    //m_Thread.start();
     m_CameraRS.moveToThread(&m_Thread);
 }
 
 MainWindow::~MainWindow()
 {
     if(m_pAabout) delete m_pAabout;
+    if(m_pTimer) delete m_pTimer;
 
     if(m_Thread.isRunning())
     {
@@ -78,23 +79,22 @@ void MainWindow::on_actionStart_triggered()
 
 void MainWindow::on_actionStop_triggered()
 {
-    m_pTimer->stop();
-    g_ThreadMutex.lock();
-    g_ThreadFlag = false;
-    g_ThreadMutex.unlock();
+    if(m_Thread.isRunning())
+    {
+        m_pTimer->stop();
+        g_ThreadMutex.lock();
+        g_ThreadFlag = false;
+        g_ThreadMutex.unlock();
+        m_Thread.quit();
+        m_Thread.wait();
+    }
 
-    //ui->labelColor->clear();
-    //ui->labelDepth->clear();
-    //ui->labelResult->clear();
     ui->labelColor->setPixmap(QPixmap());
     ui->labelDepth->setPixmap(QPixmap());
     ui->labelResult->setPixmap(QPixmap());
     ui->labelColor->setText("Color");
     ui->labelDepth->setText("Depth");
     ui->labelResult->setText("Result");
-
-    m_Thread.quit();
-    m_Thread.wait();
 }
 
 void MainWindow::on_actionExit_triggered()
@@ -102,7 +102,6 @@ void MainWindow::on_actionExit_triggered()
     on_actionStop_triggered();
 
     this->close();
-
 }
 
 // Main procedure
@@ -212,7 +211,73 @@ void MainWindow::on_actionPlane_Calibration_triggered()
 
     //Method 2 Use RANSAC
     //FitPlane                //need to be verified later
+    /*pcl::PointCloud<pcl::PointXYZ>::Ptr input(new pcl::PointCloud<pcl::PointXYZ>);
+    if (pcl::io::loadPLYFile<pcl::PointXYZ>("./Image/Ply/pointcloud1.ply", *input) == -1)
+    {
+         PCL_ERROR("Couldnot read file.\n");
+         system("pause");
+         return;
+    }
 
+    m_FitPlane.FitPlanebyRansac(input);*/
+
+    //Method 3 Use AHC
+    if(m_DepthFlame.empty())
+    {
+        m_DepthFlame = cv::imread("D:/image/depth1.png", -1);
+        if(m_DepthFlame.empty()) return;
+    }
+
+    m_PlaneFilter.clear();
+    m_PlaneContour.clear();
+
+    /*
+    m_PlaneFilter.minSupport = 200;
+    m_PlaneFilter.params.z_far = 2000;
+    m_PlaneFilter.params.depthAlpha = 0.09;
+    m_PlaneFilter.windowWidth = m_PlaneFilter.windowHeight = 2;
+    m_PlaneFilter.params.stdTol_merge = 10;
+    m_PlaneFilter.params.stdTol_init = 10;
+    m_PlaneFilter.params.similarityTh_merge = std::cos(MACRO_DEG2RAD(70.0));
+    m_PlaneFilter.params.similarityTh_refine = std::cos(MACRO_DEG2RAD(35.0)); */
+
+    MyPointClound::GenPly(m_DepthFlame, cv::Mat());
+    m_Cloud = MyPointClound::GenPly(m_DepthFlame);
+    cv::Mat roiimg = cv::Mat(m_Cloud.hh, m_Cloud.ww, CV_8UC3);
+    m_PlaneFilter.run(&m_Cloud, &m_PlaneContour, &roiimg);
+    cv::imwrite("Plane_Calibration.png", roiimg);
+    int cnt = (int)m_PlaneContour.size();
+    if(cnt <= 0)
+    {
+        ui->textEdit->append("pSeg Plane number = 0");
+        return;
+    }
+
+    double *centerptr = m_PlaneFilter.extractedPlanes[0]->center;
+    double *normalptr = m_PlaneFilter.extractedPlanes[0]->normal;
+    cv::Vec3d planeNormal(normalptr[0], normalptr[1], normalptr[2]);
+    //planeNormal = cv::normalize(planeNormal);
+    if(planeNormal[2] < 0)
+    {
+        planeNormal = -planeNormal;
+    }
+
+    std::vector<cv::Mat> vecPlane;
+    cv::Mat planepoints;
+    cv::Mat plane;
+
+    MyPointClound::GenPlane(m_PlaneFilter, m_PlaneContour, m_DepthFlame, vecPlane);
+    MyPointClound::FitPlane(vecPlane[0], plane);
+
+    //平面参数方程：Ax+By+Cz=D   plane分别对应ABCD
+    cv::Vec4d tablePlane = cv::Vec4d(plane.at<double>(0, 0), plane.at<double>(1, 0), plane.at<double>(2, 0), plane.at<double>(3, 0));
+    if(tablePlane[2] < 0)
+    {
+        tablePlane = -tablePlane;
+    }
+
+    cv::Vec3d planeNormalNew(tablePlane[0], tablePlane[1], tablePlane[2]);
+    cv::Vec3d planeCenter(0, 0, -tablePlane[3]/tablePlane[2]);
 }
 
 void MainWindow::startGUI()

@@ -14,6 +14,7 @@
 #include "mars.h"
 
 #include "ahcplanefitter.h"
+#include "fitplane.h"
 
 namespace Ui {
 class MainWindow;
@@ -57,6 +58,7 @@ private:
 
     HalconCpp::HTuple hv_WindowID;
     Camera_RealSense m_CameraRS;
+    FitPlane m_FitPlane;
     QThread m_Thread;
     QTimer *m_pTimer;
     cv::Mat m_DepthFlame;
@@ -68,6 +70,10 @@ private:
 
     //AHC plane
     AHCPlaneFitter m_Ahcpf;
+    PlaneFilter3 m_PlaneFilter;
+    std::vector<std::vector<int> > m_PlaneContour;
+
+    Image3DClound m_Cloud;
 };
 
 #endif // MAINWINDOW_H

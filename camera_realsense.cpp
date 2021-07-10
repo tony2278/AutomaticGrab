@@ -23,8 +23,7 @@ bool Camera_RealSense::Start()
         frameset = pipe.wait_for_frames();
     }
 
-    m_Flag = true;
-    while(m_Flag)
+    while(1)
     {
         g_ThreadMutex.lock();
         m_Flag = g_ThreadFlag;
@@ -35,13 +34,13 @@ bool Camera_RealSense::Start()
             pipe.stop();
             m_Color = cv::Mat();
             m_ColorizedDepth = cv::Mat();
-
             break;
         }
 
         frameset = pipe.wait_for_frames();
         if(frameset.size() < 1)
         {
+            QThread::msleep(10);
             continue;
         }
 

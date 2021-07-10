@@ -225,7 +225,7 @@
    </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
-     <string>About</string>
+     <string>帮助</string>
     </property>
     <addaction name="actionAbout"/>
    </widget>
@@ -297,7 +297,7 @@
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>About</string>
+    <string>关于</string>
    </property>
   </action>
   <action name="action">

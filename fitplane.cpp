@@ -31,17 +31,17 @@ boost::shared_ptr<pcl::visualization::PCLVisualizer> FitPlane::simpleVis (pcl::P
     return (viewer);
 }*/
 
-int FitPlane::FitPlanebyRansac()
+int FitPlane::FitPlanebyRansac(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud)
 {
     srand(time(NULL));
     // initialize PointClouds
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+    //pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr final (new pcl::PointCloud<pcl::PointXYZ>);
 
     std::string argument = "-f";
 
     // populate our PointCloud with points
-    cloud->width    = 5000;
+    //cloud->width    = 5000;
     cloud->height   = 1;
     cloud->is_dense = false;
     cloud->points.resize (cloud->width * cloud->height);
@@ -74,21 +74,19 @@ int FitPlane::FitPlanebyRansac()
     std::vector<int> inliers;
 
     // created RandomSampleConsensus object and compute the appropriated model
-    pcl::SampleConsensusModelSphere<pcl::PointXYZ>::Ptr
-    model_s(new pcl::SampleConsensusModelSphere<pcl::PointXYZ> (cloud));
-    pcl::SampleConsensusModelPlane<pcl::PointXYZ>::Ptr
-    model_p (new pcl::SampleConsensusModelPlane<pcl::PointXYZ> (cloud));
+    pcl::SampleConsensusModelSphere<pcl::PointXYZ>::Ptr model_s(new pcl::SampleConsensusModelSphere<pcl::PointXYZ> (cloud));
+    pcl::SampleConsensusModelPlane<pcl::PointXYZ>::Ptr  model_p (new pcl::SampleConsensusModelPlane<pcl::PointXYZ> (cloud));
     if(argument.compare("-f") == 0)
     {
         pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model_p);
-        ransac.setDistanceThreshold (.01);
+        ransac.setDistanceThreshold (0.001);
         ransac.computeModel();
         ransac.getInliers(inliers);
     }
     else if (argument.compare("-sf") == 0 )
     {
         pcl::RandomSampleConsensus<pcl::PointXYZ> ransac (model_s);
-        ransac.setDistanceThreshold (0.008);
+        ransac.setDistanceThreshold (0.0008);
         ransac.computeModel();
         ransac.getInliers(inliers); //返回查找到的内点
     }
@@ -98,7 +96,7 @@ int FitPlane::FitPlanebyRansac()
 
     // copies all inliers of the model computed to another PointCloud
     pcl::copyPointCloud<pcl::PointXYZ>(*cloud, inliers, *final);//根据inliers索引，将输入的点云cloud中的点挑选到final存放
-
+    int fisize = final->size();
     std::cerr<<"final: "<<final->size()<<std::endl;
     // creates the visualization object and adds either our orignial cloud or all of the inliers
     // depending on the command line arguments specified.
@@ -116,7 +114,17 @@ int FitPlane::FitPlanebyRansac()
     ///    viewer->spinOnce (100);
     ///    boost::this_thread::sleep (boost::posix_time::microseconds (100000));
     }
-        return 0;
+
+    // 设置并保存点云
+    final->height = 1;
+    final->is_dense = false;
+    std::string name = "./Image/Ply/pointcloud1-fit-plane";
+
+    pcl::io::savePLYFile(name + ".ply", *final);   //将点云数据保存为ply文件
+    // 清除数据并退出
+    final->points.clear();
+
+    return 0;
 }
 
 

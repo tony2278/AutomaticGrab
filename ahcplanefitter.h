@@ -1,6 +1,10 @@
 #ifndef AHCPLANEFITTER_H
 #define AHCPLANEFITTER_H
 
+#include <vector>
+
+
+//PCL
 #include <pcl/io/ply_io.h>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
@@ -35,10 +39,35 @@ struct OrganizedImage3D {
     }
 };
 
+struct Image3DClound
+{
+    int ww, hh;
+    std::vector<Eigen::Vector3d> pcloud3d;
+
+    inline int width() const { return ww; }
+    inline int height() const { return hh; }
+    inline bool get(const int row, const int col, double& x, double& y, double& z) const {
+        const int index = row * ww + col;
+        x=pcloud3d[index][0]; y=pcloud3d[index][1]; z=pcloud3d[index][2];
+        if(pcl_isnan(z)==0 || z == 0) //return false if current depth is NaN
+        {
+            return false;
+        }
+
+        return true;
+    }
+};
 
 typedef OrganizedImage3D<pcl::PointXYZRGB> RGBDImage;
-typedef ahc::PlaneFitter<RGBDImage> PlaneFitter;
+typedef OrganizedImage3D<pcl::PointXYZ> RGBImage;
+typedef ahc::PlaneFitter<RGBDImage> PlaneFitter1;
+typedef ahc::PlaneFitter<RGBImage> PlaneFitter2;
+typedef ahc::PlaneFitter<Image3DClound> PlaneFilter3;
 
+// 定义点云类型
+typedef pcl::PointXYZRGBA PointT;
+typedef pcl::PointCloud<PointT> PointCloud;
+typedef pcl::PointCloud<Image3DClound> PointCloud_;
 
 class AHCPlaneFitter
 {
@@ -52,13 +81,15 @@ public:
     void ReadPly();
 
 protected:
-    PlaneFitter pf;
+    PlaneFitter1 pf1;
+    PlaneFitter2 pf2;
+    PlaneFilter3 pf3;
     cv::Mat rgb, seg;
     bool done;
 
 private:
     pcl::PointCloud<pcl::PointXYZRGB> cloud;
-
+    pcl::PointCloud<pcl::PointXYZ> cloud2;
 };
 
 #endif // AHCPLANEFITTER_H

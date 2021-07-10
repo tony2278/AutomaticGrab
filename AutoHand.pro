@@ -75,6 +75,9 @@ INCLUDEPATH += $$PWD/include_RealSense/Intel-RealSense-SDK-2.0/samples
 #-------AHC Config
 INCLUDEPATH += $$PWD/include_AHC
 
+#-------Mini Dump lib
+LIBS += $$PWD/lib_Minidump/Dbghelp.lib
+
 Debug:
 {
 #-------OpenCV Config Lib

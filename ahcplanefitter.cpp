@@ -19,6 +19,7 @@ void AHCPlaneFitter::ReadPly()
     //pcl::PointCloud<pcl::PointXYZ> input;
     //pcl::PointCloud<pcl::PointXYZRGB> cloud;
     //pcl::copyPointCloud(input, cloud);
+    cloud2 = *input;
     pcl::copyPointCloud(*input, cloud);
 }
 
@@ -49,10 +50,10 @@ void AHCPlaneFitter::onNewCloud()
     //timer.tic();
 
 #if 0
-    pf.run(&rgbd, 0, &seg);
+    pf1.run(&rgbd, 0, &seg);
 #else
     std::vector< std::vector<int> > membership;
-    pf.run(&rgbd, &membership, 0);
+    pf1.run(&rgbd, &membership, 0);
     {
         static cv::Mat my_color_map;
         my_color_map.reserve(256);
@@ -78,13 +79,13 @@ void AHCPlaneFitter::onNewCloud()
             }
             my_color_map.at<cv::Vec3b>(255) = cv::Vec3b(0, 0, 0);
         }
-        seg = cv::Mat::zeros(pf.height, pf.width, CV_8UC3);
+        seg = cv::Mat::zeros(pf1.height, pf1.width, CV_8UC3);
         for (int i = 0; i < membership.size(); ++i) {
             const std::vector<int>& mi = membership[i];
             for (int k = 0; k < mi.size(); ++k) {
                 const int pixid = mi[k];
-                const int py = pixid / pf.width;
-                const int px = pixid - py*pf.width;
+                const int py = pixid / pf1.width;
+                const int px = pixid - py*pf1.width;
                 seg.at<cv::Vec3b>(py, px) = my_color_map.at<cv::Vec3b>(i);
             }
         }
@@ -110,45 +111,45 @@ void AHCPlaneFitter::onNewCloud()
 void AHCPlaneFitter::SetPF()
 {
     // related to T_mse
-    int depthSigma = (int)(pf.params.depthSigma * 1e7);
-    int mergeMSETol = (int)pf.params.stdTol_merge;
-    int initMSETol = (int)pf.params.stdTol_init;
+    int depthSigma = (int)(pf1.params.depthSigma * 1e7);
+    int mergeMSETol = (int)pf1.params.stdTol_merge;
+    int initMSETol = (int)pf1.params.stdTol_init;
 
     // related to T_ang
-    int z_near = (int)pf.params.z_near;
-    int z_far = (int)pf.params.z_far;
+    int z_near = (int)pf1.params.z_near;
+    int z_far = (int)pf1.params.z_far;
     int angle_near = (int)15;
     int angle_far = (int)90;
     int simThMergeDeg = 60;
     int simThRefDeg = 30;
 
     // related to T_dz
-    int depthAlpha = (int)(pf.params.depthAlpha * 100);
-    int depthChangeTol = (int)(pf.params.depthChangeTol * 100);
+    int depthAlpha = (int)(pf1.params.depthAlpha * 100);
+    int depthChangeTol = (int)(pf1.params.depthChangeTol * 100);
 
     // other
-    int minSupport = (int)pf.minSupport;
-    int doRefine = (int)pf.doRefine;
-    int erodeType = (int)pf.erodeType;
+    int minSupport = (int)pf1.minSupport;
+    int doRefine = (int)pf1.doRefine;
+    int erodeType = (int)pf1.erodeType;
 
     static bool reported = false;
-    pf.params.depthSigma = depthSigma*1e-7;
-    pf.params.stdTol_init = (double)initMSETol;
-    pf.params.stdTol_merge = (double)mergeMSETol;
+    pf1.params.depthSigma = depthSigma*1e-7;
+    pf1.params.stdTol_init = (double)initMSETol;
+    pf1.params.stdTol_merge = (double)mergeMSETol;
 
-    pf.params.z_near = (double)z_near;
-    pf.params.z_far = (double)z_far;
-    pf.params.angle_near = (double)MACRO_DEG2RAD(angle_near);
-    pf.params.angle_far = (double)MACRO_DEG2RAD(angle_far);
-    pf.params.similarityTh_merge = std::cos(MACRO_DEG2RAD(simThMergeDeg));
-    pf.params.similarityTh_refine = std::cos(MACRO_DEG2RAD(simThRefDeg));
+    pf1.params.z_near = (double)z_near;
+    pf1.params.z_far = (double)z_far;
+    pf1.params.angle_near = (double)MACRO_DEG2RAD(angle_near);
+    pf1.params.angle_far = (double)MACRO_DEG2RAD(angle_far);
+    pf1.params.similarityTh_merge = std::cos(MACRO_DEG2RAD(simThMergeDeg));
+    pf1.params.similarityTh_refine = std::cos(MACRO_DEG2RAD(simThRefDeg));
 
-    pf.params.depthAlpha = (double)depthAlpha*0.01;
-    pf.params.depthChangeTol = (double)depthChangeTol*0.01;
+    pf1.params.depthAlpha = (double)depthAlpha*0.01;
+    pf1.params.depthChangeTol = (double)depthChangeTol*0.01;
 
-    pf.minSupport=minSupport;
-    pf.doRefine=doRefine!=0;
-    pf.erodeType = (ahc::ErodeType)erodeType;
+    pf1.minSupport=minSupport;
+    pf1.doRefine=doRefine!=0;
+    pf1.erodeType = (ahc::ErodeType)erodeType;
 }
 
 
