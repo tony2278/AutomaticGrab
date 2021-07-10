@@ -7,7 +7,7 @@
 #include <QDir>
 #include "opencv2/opencv.hpp"
 #include "common1.h"
-
+#include "planesegment.h"
 
 using namespace HalconCpp;
 
@@ -222,7 +222,26 @@ void MainWindow::on_actionPlane_Calibration_triggered()
 
     m_FitPlane.FitPlanebyRansac(input);*/
 
+    //Method 2 Use RANSAC
+    //FitPlane                //need to be verified later
+    pcl::PointCloud<pcl::PointXYZ>::Ptr input(new pcl::PointCloud<pcl::PointXYZ>);
+    if (pcl::io::loadPLYFile<pcl::PointXYZ>("./Image/Ply/pointcloud1.ply", *input) == -1)
+    {
+         ui->textEdit->append("Could not read file.\n");
+         return;
+    }
+
+    PlaneSegment planeSeg;
+    int result = planeSeg.SegmentPCL(input);
+    ui->textEdit->append("Segment Plane result = " + QString::number(result));
+
+    //Model coefficients: -0.100913 -0.990235 0.0961786 0.00816132
+    //Model inliers: 61490
+
+
+
     //Method 3 Use AHC
+    /*
     if(m_DepthFlame.empty())
     {
         m_DepthFlame = cv::imread("D:/image/depth1.png", -1);
@@ -284,6 +303,7 @@ void MainWindow::on_actionPlane_Calibration_triggered()
 
     cv::Vec3d planeNormalNew(tablePlane[0], tablePlane[1], tablePlane[2]);
     cv::Vec3d planeCenter(0, 0, -tablePlane[3]/tablePlane[2]);
+    */
 }
 
 void MainWindow::startGUI()

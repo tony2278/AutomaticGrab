@@ -30,7 +30,8 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     camera_realsense.cpp \
     camera_thread.cpp \
-    mars.cpp
+    mars.cpp \
+    planesegment.cpp
 
 HEADERS  += mainwindow.h \
     ahcplanefitter.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     common1.h \
     fitplane.h \
     formabout.h \
-    mars.h
+    mars.h \
+    planesegment.h
 
 FORMS    += mainwindow.ui \
     formabout.ui
