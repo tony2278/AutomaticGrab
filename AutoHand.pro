@@ -59,6 +59,8 @@ INCLUDEPATH += $$PWD/include/halconcpp
 #-------OpenCV Config
 INCLUDEPATH += $$PWD/opencv/build/include
 INCLUDEPATH += $$PWD/opencv/build/include/opencv2
+INCLUDEPATH += $$PWD/include_OpenCV/include
+INCLUDEPATH += $$PWD/include_OpenCV/include/opencv2
 
 #-------PCL Config
 INCLUDEPATH += $$PWD/include_PCL/PCL-1.9.1/3rdParty/Boost/include/boost-1_68

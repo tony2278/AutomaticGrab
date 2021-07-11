@@ -3,6 +3,10 @@
 /include_PCL/
 /include_RealSense/
 /lib/
+/lib_Minidump/
+/lib_OpenCV/
+/lib_PCL/
+/lib_RealSense/
 /build/
 *.jpg
 *.user
