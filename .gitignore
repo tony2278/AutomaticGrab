@@ -2,12 +2,16 @@
 /include_OpenCV/
 /include_PCL/
 /include_RealSense/
+/include_HPSocket/
 /lib/
 /lib_Minidump/
 /lib_OpenCV/
 /lib_PCL/
 /lib_RealSense/
+/lib_HPSocket/
 /build/
+/TestProjects/build/
+/Socket/
 *.jpg
 *.user
 *.hdev

@@ -217,6 +217,7 @@
     <addaction name="action"/>
     <addaction name="actionEyeOnHand"/>
     <addaction name="actionEyeOffHanf"/>
+    <addaction name="action_2"/>
    </widget>
    <widget class="QMenu" name="menuview">
     <property name="title">
@@ -303,6 +304,11 @@
   <action name="action">
    <property name="text">
     <string>启动手眼标定</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>九点标定</string>
    </property>
   </action>
  </widget>
