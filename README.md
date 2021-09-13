@@ -1,4 +1,4 @@
-Halcon-QT GUI 
+Halcon-QT GUI   cpp
 ===========
 
 This is a project about how to use halcon, pcl in QT. 
